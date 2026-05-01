@@ -86,6 +86,7 @@ const listOpts = (cmd) =>
 
 const profiles = program.command("profiles").description("Profile operations");
 
+// Shared list/export filter flags so command behavior stays consistent.
 listOpts(profiles.command("list"))
   .description("List profiles with optional filters (same query params as API)")
   .action(async (opts) => {
