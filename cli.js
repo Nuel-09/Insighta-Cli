@@ -137,11 +137,20 @@ profiles
   });
 
 profiles
-  .command("search <query>")
-  .description('Natural language search, e.g. "young males from nigeria"')
+  .command("search")
+  .description(
+    "Natural language search (multi-word query without quotes is supported — tokens are joined with spaces)"
+  )
+  .argument("<query...>", "Natural language query, e.g. young males from nigeria")
   .option("--page <n>")
   .option("--limit <n>")
-  .action(async (q, opts) => {
+  .action(async (queryParts, opts) => {
+    const q = Array.isArray(queryParts) ? queryParts.join(" ").trim() : String(queryParts ?? "").trim();
+    if (!q) {
+      console.error("Missing search query.");
+      process.exitCode = 1;
+      return;
+    }
     const spinner = ora("Searching…").start();
     try {
       const p = new URLSearchParams();
